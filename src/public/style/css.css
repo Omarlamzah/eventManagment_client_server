@@ -1,0 +1,264 @@
+@font-face {
+  font-family: 'Merriweather';
+  src: url('../font/Merriweather-Regular.ttf') format('truetype');
+}
+body {
+  font-family: 'Merriweather', sans-serif;
+}
+body {
+ 
+  font-size: 16px;
+}
+
+
+
+#para{
+  font-size: 200px;
+}
+
+.animate-charcter
+{
+  width: 100%;
+  background-image: linear-gradient(
+    -225deg,
+    #231557 0%,
+    #44107a 29%,
+    #ff1361 67%,
+    #fff800 100%
+  );
+  background-size: auto auto;
+  background-clip: border-box;
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 2s linear infinite;
+  display: inline-block;
+      font-size: 190px;
+}
+
+@keyframes textclip {
+  to {
+    background-position: 200% center;
+  }
+}
+
+
+
+.textanimation {
+    font-family: Hack, sans-serif;
+    width: 100%;
+    background: linear-gradient(90deg, #000, #fff, #000);
+    
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 80%;
+    animation: shine 5s linear infinite;
+    position: relative;
+  }
+  
+  @keyframes shine {
+    0% {
+      background-position-x: -500%;
+    }
+    100% {
+      background-position-x: 500%;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  
+}
+
+
+
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 2em;
+  background: #212121;
+  color: #fff;
+  text-transform: uppercase;
+  gap: 30px;
+}
+
+h1 {
+  font-size: 2.5em;
+  
+}
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.3em;
+  }
+}
+
+.text-shadow {
+  font-style: italic;
+
+  color: transparent;
+  -webkit-text-stroke: #fff;
+  -webkit-text-stroke-width: 1px;
+  text-shadow: 2px 2px 10px #2962ff;
+  transition: all 0.5s ease-in-out;
+  text-align: center;
+  
+  -webkit-animation: flicker 0.5s ease-in-out infinite alternate;
+          animation: flicker 0.5s ease-in-out infinite alternate;
+}
+.text-shadow:hover {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .tags small {
+    font-size: 0.5em;
+  }
+}
+
+@-webkit-keyframes flicker {
+  0% {
+    opacity: 0.5;
+    text-shadow: 2px 2px 10px #2962ff;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 2px 2px 20px #2962ff;
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.5;
+    text-shadow: 2px 2px 10px #2962ff;
+  }
+  100% {
+    opacity: 1;
+    text-shadow: 2px 2px 20px #2962ff;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.box-with-text {
+  background-image: repeating-linear-gradient(-45deg,#6807f9, 
+      #6807f9 35px,#3978ff 35px,#39ffd1 70px);
+  min-height:100%;
+  background-position:0 0;
+  background-size: 200% 200%;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-animation: stripes 60s linear infinite;
+  animation: stripes 60s linear infinite;
+}
+
+@-webkit-keyframes stripes {
+	 0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+
+}
+
+@keyframes stripes {
+
+	 0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+/* Other stuff */
+
+
+.box-with-text {
+  
+  white-space: nowrap;
+  text-align: center;
+  text-transform: uppercase;
+  font: bold 9vmax/.8 Open Sans, Impact;
+  
+}
+
+
+
+
+.apple {
+  font-size: 8em;
+  background-color: #18191f;
+  color: #fff;
+  box-shadow: 2px 2px 2px #00000080, 10px 1px 12px #00000080,
+    2px 2px 10px #00000080, 2px 2px 3px #00000080, inset 2px 2px 10px #00000080,
+    inset 2px 2px 10px #00000080, inset 2px 2px 10px #00000080,
+    inset 2px 2px 10px #00000080;
+  border-radius: 29px;
+  padding: 11px 19px;
+  margin: 0 40px;
+  animation: animate 3s linear infinite;
+  text-shadow: 0 0 50px #0072ff, 0 0 100px #0072ff, 0 0 150px #0072ff,
+    0 0 200px #0072ff;
+}
+
+@keyframes animate {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+
+
+
+
+.marquee {
+  white-space: nowrap;
+  overflow: hidden;
+  box-sizing: border-box;
+  animation: marquee 10s linear infinite; /* Adjust duration as per your preference */
+}
+
+@keyframes marquee {
+  0% {
+      transform: translateX(100%);
+  }
+  100% {
+      transform: translateX(-100%);
+  }
+}

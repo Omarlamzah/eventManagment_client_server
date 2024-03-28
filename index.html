@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch Data with Search and Pagination</title>
+    <script src="./src/public/js/alertify.min.js"></script>
+    <link rel="stylesheet" href="./src/public/style/alertify.min.css" />
+    <!-- include a theme -->
+    <link rel="stylesheet" href="./src/public/style/themes/default.min.css" />
+
+    <link rel="stylesheet" href="./src/public/style/bulma.min.css" />
+    <link rel="stylesheet" href="./src/public/style/app.css" />
+    <script src="./src/public/js/jquery.js"></script>
+    <script src="./src/public/js/swtt.js"></script>
+
+    <script src="./src/public/js/jqurymodal.js"></script>
+    <link rel="stylesheet" href="./src/public/style/jqurysmodal.css" />
+    <link rel="stylesheet" href="./src/public/style/card.css" />
+    <link rel="stylesheet" href="./src/public/style/buttonopen.css" />
+    <link rel="stylesheet" href="./src/public/style/loadder.css" />
+  </head>
+
+  <style>
+    #contentsection {
+      display: none;
+    }
+
+    .user-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .user-card {
+      padding: 20px;
+      border-radius: 8px;
+      color: white;
+      text-align: center;
+    }
+
+    #pagination {
+      margin-top: 10px;
+    }
+
+    #pagination span {
+      display: inline-block;
+      padding: 5px 10px;
+      margin-right: 5px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+    }
+
+    #pagination span:hover {
+      background-color: #e0e0e0;
+    }
+
+    #pagination span.active {
+      font-weight: bold;
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    #pagination span.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+
+    .currentindex{
+        background-color: #007bff !important;
+    }
+    .hourglassBackground {
+      display: none;
+    }
+    .nav{
+        display: flex;
+    justify-content: center;
+    gap: 30px
+    }
+  </style>
+
+  <body>
+    <div class="hourglassBackground">
+      <div class="hourglassContainer">
+        <div class="hourglassCurves"></div>
+        <div class="hourglassCapTop"></div>
+        <div class="hourglassGlassTop"></div>
+        <div class="hourglassSand"></div>
+        <div class="hourglassSandStream"></div>
+        <div class="hourglassCapBottom"></div>
+        <div class="hourglassGlass"></div>
+      </div>
+    </div>
+
+    <section class="nav">
+      <div>
+        <p>
+          <a href="#contentsection" rel="modal:open"
+            ><img width="50" src="./src/public/asset/settings.png" alt="setting here" srcset=""
+          /></a>
+        </p>
+      </div>
+      <div id="pagination">
+        <!-- Pagination links will be displayed here -->
+      </div>
+    </section>
+
+    <section id="contentsection" class="section">
+      <div class="container">
+        <div class="field is-grouped">
+          <div class="control">
+            <input
+              class="input"
+              type="text"
+              id="url"
+              name="text"
+              
+              placeholder="IP Adress here ... "
+              value=""
+            />
+          </div>
+          <div class="control">
+            <button class="button is-primary" onclick="updaturl()">OK</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="search-text">Search Text:</label>
+          <div class="control">
+            <input class="input" type="text" id="search-text" />
+          </div>
+          <label class="label" for="search-date">Search Date:</label>
+          <div class="control">
+            <input class="input" type="date" id="search-date" />
+          </div>
+          <label class="label" for="search-time">Search Time:</label>
+          <div class="control">
+            <input class="input" type="time" id="search-time" />
+          </div>
+          <label class="label" for="pipiter-id">Pipiter ID:</label>
+          <div class="select">
+            <select id="pipiter-id">
+              <option selected value="noselected">--select--</option>
+            </select>
+          </div>
+          <div class="control">
+            <button class="button is-primary" onclick="search()">Search</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="users-list" class="user-container">
+      <!-- Users will be displayed here -->
+    </div>
+
+    <script>
+      var globalurl = "http://"+document.getElementById("url").value +":7788";
+
+      const usersList = document.getElementById("users-list");
+      const paginationDiv = document.getElementById("pagination");
+
+      // Function to perform search
+      function search() {
+        $("#contentsection").hide(600);
+        $(".hourglassBackground").show();
+        const url = "http://"+document.getElementById("url").value+":7788";
+        urlgetusers = url + "/api/getusers.php";
+         const searchText = document.getElementById("search-text").value;
+        const searchDate = document.getElementById("search-date").value;
+        const searchTime = document.getElementById("search-time").value;
+        const pipiterId = document.getElementById("pipiter-id").value;
+
+        fetchData(
+          1,
+          10,
+          searchText.trim(),
+          searchDate,   searchTime,   pipiterId,   urlgetusers
+        ); // Start fetching data from page 1 after search
+      }
+
+      // Function to fetch data
+      function fetchData(
+        page,
+        limit,
+        searchText,
+        searchDate,
+        searchTime,
+        pipiterId,
+        urlgetusers
+      ) {
+        // Construct URL with search parameters and pagination
+        const url = `${urlgetusers}?limit=${limit}&page=${page}&search_text=${searchText}&search_date=${searchDate}&search_time=${searchTime}&pipiter_id=${pipiterId}`;
+
+        // Fetch data from the PHP script
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            // Handle the received data
+            const users = data.users;
+
+            // Clear previous data
+            usersList.innerHTML = "";
+            renderUsers(users);
+            $("#contentsection").hide(600);
+            $(".hourglassBackground").hide();
+            // Loop through the users and display them
+            users.forEach((user) => {
+              //   createCard(user);
+            });
+
+            // Render pagination links
+            renderPagination(  data.total_pages,  page,  limit,  searchText, searchDate,searchTime,pipiterId
+            );
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            $("#contentsection").hide(600);
+            $(".hourglassBackground").hide();
+          });
+      }
+
+      // Function to generate a random HSL color
+      function randomHSLColor() {
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = "50%"; // You can adjust saturation as needed
+        const lightness = "50%"; // You can adjust lightness as needed
+        return `hsl(${hue}, ${saturation}, ${lightness})`;
+      }
+
+      // Modify the function to create user cards with random background color
+      function createCard(user) {
+        const url = "http://"+document.getElementById("url").value+":7788";
+        // Create the card container
+        const cardContainer = document.createElement("div");
+        cardContainer.classList.add("card-client");
+        cardContainer.style.backgroundColor = randomHSLColor(); // Set random background color
+
+        // Create and append the user picture
+        const userPicture = document.createElement("div");
+        userPicture.classList.add("user-picture");
+        const userImage = document.createElement("img");
+        userImage.src = url + "/uploads/profile/" + user.profile; // Assuming user.pictureURL contains the URL of the image
+        userPicture.appendChild(userImage);
+        cardContainer.appendChild(userPicture);
+
+        // Create and append the user name and title
+        const nameClient = document.createElement("p");
+        nameClient.classList.add("name-client");
+        nameClient.innerHTML = `${user.Nom}<span>${user.Titre}</span>`;
+        cardContainer.appendChild(nameClient);
+
+        // Create and append the user name and title
+        const nameClienttime = document.createElement("p");
+        nameClienttime.classList.add("name-client");
+        nameClienttime.innerHTML = `<span>${user.Horaire}</span>`;
+        cardContainer.appendChild(nameClienttime);
+
+        // Create and append the social media section
+        const socialMedia = document.createElement("div");
+        socialMedia.classList.add("social-media");
+        // Add social media icons or links here if needed
+        cardContainer.appendChild(socialMedia);
+
+        const buttonElement = document.createElement("button");
+        buttonElement.classList.add("cta");
+        buttonElement.addEventListener("click", function () {
+          SenddOpenfile(user.Fichier, user.ID);
+        });
+        buttonElement.innerHTML = '<span class="span">open file</span>';
+        cardContainer.appendChild(buttonElement);
+
+        // Optionally, you can add more customization or functionality here
+
+        return cardContainer;
+      }
+      // Modify the function to render users with random background color
+
+      function renderUsers(users) {
+        const usersList = document.getElementById("users-list");
+        usersList.innerHTML = ""; // Clear previous data
+
+        users.forEach((user) => {
+          const userCard = createCard(user);
+          usersList.appendChild(userCard);
+        });
+      }
+
+      // Function to render pagination links
+      // Function to render pagination links
+      function renderPagination( totalPages, currentPage, limit, searchText, searchDate, searchTime, pipiterId
+      ) {
+        const paginationDiv = document.getElementById("pagination");
+        paginationDiv.innerHTML = "";
+
+        for (let i = 1; i <= totalPages; i++) {
+          const pageSpan = document.createElement("span");
+          pageSpan.textContent = i;
+
+          // Highlight current page
+          if (i === currentPage) {
+            pageSpan.style.fontWeight = "bold";
+            pageSpan.classList.add("currentindex")
+          }
+
+          const url = "http://"+document.getElementById("url").value +":7788";
+          const urlgetusers = `${url}/api/getusers.php`;
+
+          // Add event listener for pagination link click
+          pageSpan.addEventListener("click", () => {
+            fetchData(
+              i,
+              limit,
+              searchText,
+              searchDate,
+              searchTime,
+              pipiterId,
+              urlgetusers
+            );
+          });
+
+          paginationDiv.appendChild(pageSpan);
+        }
+      }
+
+      // Initial fetch with default parameters
+
+      const fetchDataPipiter = () => {
+        // Construct URL with search parameters and pagination
+        const url = `${urlpipiter}`;
+
+        // Fetch data from the PHP script
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            // Handle the received data
+            const pipiters = data.pipiters;
+            const pipiterElement = document.getElementById("pipiter-id");
+            // Clear previous data
+
+            // Loop through the users and display them
+            pipiters.forEach((pipiter) => {
+              const option = document.createElement("option");
+              option.value = pipiter.ID; // Assuming ID is the value to be stored
+              option.innerText = pipiter.Nom; // Assuming Nom is the name to be displayed
+              pipiterElement.appendChild(option); // Append option to select element
+            });
+
+            // Optionally, you can trigger an event to notify any listeners that the data has been updated
+            pipiterElement.dispatchEvent(new Event("change"));
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      };
+    </script>
+
+    <script>
+      const updaturl = () => {
+        $("#contentsection").hide(600);
+        $(".hourglassBackground").show();
+
+        const url = "http://"+document.getElementById("url").value +":7788";
+        urlpipiter = url + "/api/getpipiter.php";
+        urlgetusers = url + "/api/getusers.php";
+
+        fetchData(1, 10, "", "", "", "noselected", urlgetusers);
+        fetchDataPipiter(urlpipiter);
+      };
+    </script>
+
+    <script>
+      apiopenpptx.receive("file-opened", (txt) => {
+        $("#contentsection").hide(600);
+        $(".hourglassBackground").hide();
+      });
+      const SenddOpenfile = (filePath, id) => {
+        const url = "http://"+document.getElementById("url").value+":7788";
+        apiopenpptx.send("open-file", { url, filePath });
+        $("#contentsection").hide(600);
+        $(".hourglassBackground").show();
+
+        updateStatusFile(id);
+      };
+
+      const updateStatusFile = (id) => {
+        const url = "http://"+document.getElementById("url").value +":7788";
+        const status = "oui";
+
+        // Create an object with the data to send in the POST request
+        const postData = {
+          id: id,
+          status: status,
+        };
+        const urlpost = url + "/api/updatestatus.php";
+
+        // Configure the fetch request
+        fetch(urlpost, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        })
+          .then((response) => {
+            if (response.ok) {
+              console.log("Status updated successfully");
+            } else {
+              console.error("Error updating status:", response.statusText);
+            }
+          })
+          .catch((error) => {
+            console.error("Error updating status:", error);
+          });
+      };
+    </script>
+  </body>
+</html>

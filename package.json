@@ -1,0 +1,63 @@
+{
+  "name": "clientpip",
+  "version": "3.0.0",
+  "description": "clientpip moderator application for event management",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "pack": "build --dir",
+    "pack-installer": "build",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "build": "electron-builder build --win --publish never",
+    "deploy": "electron-builder build  --win --publish always",
+    "postinstall": "electron-builder install-app-deps",
+    "dist": "electron-builder build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Omarlamzah/SeeCast"
+  },
+
+  "keywords": [
+    "Electron",
+    "quick",
+    "management",
+    "event",
+    "moderator",
+    "clientpip"
+  ],
+  "author": "Omarlamzah",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "electron": "^28.2.1",
+    "electron-builder": "^22.14.7",
+    "http-server": "^0.10.0"
+  },
+  "dependencies": {
+    "custom-electron-titlebar": "^4.2.8",
+    "electron-alert": "^0.1.20",
+    "electron-is-dev": "^0.1.2",
+    "electron-store": "^8.1.0"
+  },
+  "build": {
+    "appId": "com.electron.clientpip",
+    "productName": "clientpip",
+    "win": {
+      "target": [
+        "NSIS"
+      ],
+      "icon": "icon/icon.ico"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "app/**/*",
+      "node_modules/**/*",
+      "src/**/*",
+      "icon/*",
+      "LICENSE.md"
+    ]
+  }
+}
